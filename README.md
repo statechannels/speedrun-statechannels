@@ -96,9 +96,9 @@ Clients opening a channel will use a **payable** `fundChannel()` function, which
 
 #### 🥅 Goals:
 
-- [ ] does opening a channel cause a `Recieved Wisdom` box to appear?
+- [ ] does opening a channel (from Rube's tab, you may need some funds from the faucet) cause a `Recieved Wisdom` box to appear?
 - [ ] do opened channels appear on the contract owner's UI as well?
-- [ ] using the _Debug UI_ tab, does a repeated call to `fundChannel` fail?
+- [ ] using the _Debug Contracts_ tab, does a repeated call to `fundChannel` fail?
 
 ---
 
@@ -114,7 +114,9 @@ Functions of note:
 - `reimburseService`: the client creates a voucher for the recieved service, signs it, and returns it
 - `processVoucher`: the service provider recieves and stores vouchers
 
-The first two are complete - we will work on `processVoucher`, where the service provider examines returned payments, confirms their authenticity, and stores them.
+The first two are complete - we will work on [`processVoucher`](./packages/react-app/src/App.jsx#L457), where the service provider examines returned payments, confirms their authenticity, and stores them.
+
+-- NOTE that as the Guru, your UI doesn't reflect the payments, yet! --
 
 > 📝 Edit App.jsx to complete the `processVoucher()` function and secure this off-chain exchange. You'll need to recreate the encoded message that the client has signed, and then verify that the received signature was in fact produced by the client on that same data.
 
@@ -125,7 +127,7 @@ The first two are complete - we will work on `processVoucher`, where the service
 
 #### ⚔️ Side Quest:
 
-- [ ] can `provideService` be modified to prevent continued service to deadbeat clients?
+- [ ] can `provideService` be modified to prevent continued service to clients who go offline (close their tab)?
 
 ### Checkpoint 5: Recover Service Provider's Earnings
 
