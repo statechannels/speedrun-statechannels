@@ -27,9 +27,9 @@
 
 ```bash
 
-git clone https://github.com/statechannels/speedrun-statechannels.git challenge-N-statechannels
+git clone https://github.com/statechannels/speedrun-statechannels.git
 
-cd challenge-N-statechannels
+cd speedrun-statechannels
 
 yarn install
 
