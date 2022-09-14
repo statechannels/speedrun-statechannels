@@ -116,8 +116,6 @@ Functions of note:
 
 The first two are complete - we will work on [`processVoucher`](./packages/react-app/src/App.jsx#L457), where the service provider examines returned payments, confirms their authenticity, and stores them.
 
--- NOTE that as the Guru, your UI doesn't reflect the payments, yet! --
-
 > 📝 Edit App.jsx to complete the `processVoucher()` function and secure this off-chain exchange. You'll need to recreate the encoded message that the client has signed, and then verify that the received signature was in fact produced by the client on that same data.
 
 #### 🥅 Goals:
@@ -127,13 +125,14 @@ The first two are complete - we will work on [`processVoucher`](./packages/react
 
 #### ⚔️ Side Quest:
 
-- [ ] can `provideService` be modified to prevent continued service to clients who go offline (close their tab)?
+- [ ] can `provideService` be modified to prevent continued service to clients who don't keep up with their payments?
 
 ### Checkpoint 5: Recover Service Provider's Earnings
 
 Now that we've collected some vouchers, we'd like to redeem them on-chain in order to move funds from the contract's `balances` map to the contract owner. The `withdrawEarnings` function of `Streamer.sol` takes a voucher (balance + signature) as input, and should:
 
 - recover the signer using `ecrecover()` on the `prefixedHashed` message and supplied signature
+- HINT signature needs to be decomposed into v,r,s
 - check that the signer has a running channel with balance greater than the voucher's `updatedBalance`
 - calculate the payout (`balances[signer] - updatedBalance`)
 - update the channel balance
