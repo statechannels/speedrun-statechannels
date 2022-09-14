@@ -378,6 +378,9 @@ function App(props) {
       updatedBalance = ethers.BigNumber.from(0);
     }
 
+    signVoucher(updatedBalance);
+    recoverVoucherSigner(updatedBalance);
+
     const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
     const hashed = ethers.utils.keccak256(packed);
     const arrayified = ethers.utils.arrayify(hashed);
@@ -389,7 +392,7 @@ function App(props) {
     //    and on-chain (by the Streamer contract). These are distinct runtimes, so
     //    care needs to be taken that signatures are applied to well-specified data encodings.
     //
-    //    the arrarify call below encodes this data in an EVM compatible way
+    //    the arrayify call below encodes this data in an EVM compatible way
     //
     //    see: https://blog.ricmoo.com/verifying-messages-in-solidity-50a94f82b2ca for some
     //         more on EVM verification of messages signed off-chain
@@ -458,13 +461,21 @@ function App(props) {
       // recreate a BigNumber object from the message. v.data.updatedBalance is
       // a string representation of the BigNumber for transit over the network
       const updatedBalance = ethers.BigNumber.from(v.data.updatedBalance);
+      const packed = ethers.utils.solidityPack(["uint256"], [v.data.updatedBalance]);
+      const hashed = ethers.utils.keccak256(packed);
+      const arrayified = ethers.utils.arrayify(hashed);
+
+      const recoveredSigner = ethers.utils.verifyMessage(arrayified, v.data.signature);
+      if (recoveredSigner.toLowerCase() != clientAddress.toLowerCase()) {
+        console.error("incorrect signer recovered");
+      }
 
       /**
        * Checkpoint 4:
        *
        *  currently, this function recieves and stores vouchers uncritically.
        *
-       *  recreate the packed, hashed, and arrarified message from reimburseService (above),
+       *  recreate the packed, hashed, and arrayified message from reimburseService (above),
        *  and then use ethers.utils.verifyMessage() to confirm that voucher signer was
        *  `clientAddress`. (If it wasn't, log some error message and return).
        */
@@ -794,7 +805,6 @@ function App(props) {
                         Claimable Balance: <Balance balance={window.claimable[clientAddress]} fontSize={14} />
                       </Card>
 
-                      {/* Checkpoint 5:
                       <Button
                         style={{ margin: 5 }}
                         type="primary"
@@ -805,7 +815,7 @@ function App(props) {
                         }}
                       >
                         Cash out latest voucher
-                      </Button> */}
+                      </Button>
                     </List.Item>
                   )}
                 ></List>
