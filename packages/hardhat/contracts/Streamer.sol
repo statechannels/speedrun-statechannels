@@ -15,6 +15,9 @@ contract Streamer is Ownable {
   mapping(address => uint256) closeAt;
 
   function fundChannel() public payable {
+    require(balances[msg.sender] == 0, 'channel already funded');
+    balances[msg.sender] = msg.value;
+    emit Opened(msg.sender,msg.value);
     /*
       Checkpoint 3: fund a channel
 
@@ -41,11 +44,18 @@ contract Streamer is Ownable {
     //
     // There are seemingly extra steps here compared to what was done in the off-chain
     // `reimburseService` and `processVoucher`. Note that those ethers signing and verification
-    // functinos do the same under the hood.
+    // functions do the same under the hood.
     //
     // again, see https://blog.ricmoo.com/verifying-messages-in-solidity-50a94f82b2ca
     bytes memory prefixed = abi.encodePacked('\x19Ethereum Signed Message:\n32', hashed);
     bytes32 prefixedHashed = keccak256(prefixed);
+    address signer = ecrecover(prefixedHashed,v.sig.v,v.sig.r,v.sig.s);
+
+
+    require(balances[signer]>v.updatedBalance,'voucher signer has insufficient channel balance');
+    uint256 payment = balances[signer] - v.updatedBalance;
+    balances[signer] = v.updatedBalance;
+    this.owner().call{value:payment}("");
 
     /*
       Checkpoint 5: Recover earnings
@@ -73,6 +83,12 @@ contract Streamer is Ownable {
     - emits a Challenged event
   */
 
+  function challengeChannel() public {
+    require(balances[msg.sender]>0, 'sender has no funded channel');
+    closeAt[msg.sender] = block.timestamp + 1000;
+    emit Challenged(msg.sender);
+  }
+
   /*
     Checkpoint 6b: Close the channel
 
@@ -82,6 +98,13 @@ contract Streamer is Ownable {
     - sends the channel's remaining funds to msg.sender, and sets
       the balance to 0
   */
+
+    function closeChannel() public {
+    require(closeAt[msg.sender]>0, 'sender has no challenged channel');
+    require(block.timestamp > closeAt[msg.sender], 'channel not yet closed');
+    balances[msg.sender] = 0;
+    msg.sender.call{value: balances[msg.sender]}("");
+  }
 
   struct Voucher {
     uint256 updatedBalance;
