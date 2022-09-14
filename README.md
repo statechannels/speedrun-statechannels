@@ -19,7 +19,6 @@
 
 > 💬 Meet other builders working on this challenge and get help in the [Challenge 1 telegram](https://t.me/joinchat/E6r91UFt4oMJlt01)!
 
-
 ---
 
 ### Checkpoint 0: 📦 install 📚
@@ -50,7 +49,7 @@ yarn deploy  (to compile, deploy, and publish your contracts to the frontend)
 
 > 👩‍💻 Rerun `yarn deploy --reset` whenever you want to deploy new contracts to the frontend.
 
----
+## Note that `yarn deploy` will cause an error at first. You'll be fixing this in the next section.
 
 ### Checkpoint 2: Configure Deployment & Wallets
 
@@ -80,7 +79,6 @@ The wallet icon now lets you move between accounts. Eventually you'll probably w
 ---
 
 ### Checkpoint 3: Fund a channel
-
 
 Like the [decentralized staking challenge](https://speedrunethereum.com/challenge/decentralized-staking), we'll track balances for individual channels / users in a mapping:
 
