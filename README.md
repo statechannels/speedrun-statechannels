@@ -19,7 +19,6 @@
 
 > 💬 Meet other builders working on this challenge and get help in the [Challenge 1 telegram](https://t.me/joinchat/E6r91UFt4oMJlt01)!
 
-🧫 Everything starts by ✏️ Editing `Streamer.sol` in `packages/hardhat/contracts`
 
 ---
 
@@ -34,8 +33,6 @@ cd speedrun-statechannels
 yarn install
 
 ```
-
-🔏 Edit your smart contract `Streamer.sol` in `packages/hardhat/contracts`
 
 ---
 
@@ -84,6 +81,7 @@ The wallet icon now lets you move between accounts. Eventually you'll probably w
 
 ### Checkpoint 3: Fund a channel
 
+
 Like the [decentralized staking challenge](https://speedrunethereum.com/challenge/decentralized-staking), we'll track balances for individual channels / users in a mapping:
 
 ```
@@ -91,6 +89,8 @@ mapping (address => uint256) balances;
 ```
 
 Clients opening a channel will use a **payable** `fundChannel()` function, which will update this mapping with the supplied balance.
+
+🔏 Edit your smart contract `Streamer.sol` in `packages/hardhat/contracts`
 
 > 📝 Edit Streamer.sol to complete the `fundChannel()` function
 
