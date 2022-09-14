@@ -49,7 +49,7 @@ yarn deploy  (to compile, deploy, and publish your contracts to the frontend)
 
 > 👩‍💻 Rerun `yarn deploy --reset` whenever you want to deploy new contracts to the frontend.
 
-## Note that `yarn deploy` will cause an error at first. You'll be fixing this in the next section.
+Note that `yarn deploy` will cause an error at first. You'll be fixing this in the next section.
 
 ### Checkpoint 2: Configure Deployment & Wallets
 
