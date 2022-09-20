@@ -469,6 +469,17 @@ function App(props) {
        *  `clientAddress`. (If it wasn't, log some error message and return).
        */
 
+      const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
+      const hashed = ethers.utils.keccak256(packed);
+      const arrayified = ethers.utils.arrayify(hashed);
+
+      const signer = ethers.utils.verifyMessage(arrayified, v.data.signature);
+
+      if (signer != clientAddress) {
+        console.warn(`recieved fraudulent voucher!`);
+        return;
+      }
+
       const existingVoucher = vouchers()[clientAddress];
 
       // update our stored voucher if this new one is more valuable
