@@ -804,7 +804,7 @@ function App(props) {
                         </div>
                       </Card>
 
-                      {/* Checkpoint 5:
+                      {/* Checkpoint 5: */}
                       <Button
                         style={{ margin: 5 }}
                         type="primary"
@@ -815,7 +815,7 @@ function App(props) {
                         }}
                       >
                         Cash out latest voucher
-                      </Button> */}
+                      </Button>
                     </List.Item>
                   )}
                 ></List>
