@@ -57,14 +57,16 @@ contract Streamer is Ownable {
     */
 
     // use ecrecover on prefixedHashed and the supplied signature
-
+    address signer = ecrecover(prefixedHashed, v.sig.v, v.sig.r, v.sig.s);
     // require that the recovered signer has a running channel with balances[signer] > v.updatedBalance
-
+    require(balances[signer] > v.updatedBalance, "voucher does not decrease channel balance");
     // calculate the payment when reducing balances[signer] to v.updatedBalance
+    uint256 payment = balances[signer] - v.updatedBalance;
 
     // adjust the channel balance, and pay the contract owner. (Get the owner address with 
     // the `owner()` function)
-
+    owner().call{value: payment}("");
+    balances[signer] = v.updatedBalance;
   }
 
   /*
