@@ -119,7 +119,7 @@ describe("Statechannel Challenge: The Guru's Offering", function () {
     });
 
     it("refuses illegitimate withdrawals", async function () {
-      const [, , , carol] = await ethers.getSigners();
+      const [, , , carol] = await ethers.getSigners(); // carol has no open channel
 
       const updatedBalance = ethers.utils.parseEther("0.5");
       const voucher = await createVoucher(updatedBalance, carol);
