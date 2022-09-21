@@ -153,7 +153,7 @@ describe("Statechannel Challenge: The Guru's Offering", function () {
       await assertBalance("2.5"); // contract total unchanged becaues defund fails
     });
 
-    it("allows defunding after the channege period", async function () {
+    it("allows defunding after the challenge period", async function () {
       const [, , bob] = await ethers.getSigners();
 
       const initBobBalance = ethers.BigNumber.from(
