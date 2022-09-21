@@ -33,6 +33,28 @@ describe("Statechannel Challenge: The Guru's Offering", function () {
     ).to.equal(ethers.utils.parseEther(b));
   }
 
+  /**
+   * Creates a redeemable voucher for the given balance
+   * in the name of `signer`
+   *
+   * @param {ethers.BigNumber} updatedBalance
+   * @param {ethers.SignerWithAddress} signer
+   * @returns
+   */
+  async function createVoucher(updatedBalance, signer) {
+    const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
+    const hashed = ethers.utils.keccak256(packed);
+    const arrayified = ethers.utils.arrayify(hashed);
+
+    const carolSig = await signer.signMessage(arrayified);
+
+    const voucher = {
+      updatedBalance,
+      sig: ethers.utils.splitSignature(carolSig),
+    };
+    return voucher;
+  }
+
   describe("contract Streamer.sol", function () {
     it("deploys", async function () {
       const streamerFct = await ethers.getContractFactory("Streamer");
@@ -77,17 +99,7 @@ describe("Statechannel Challenge: The Guru's Offering", function () {
       const [, alice] = await ethers.getSigners();
 
       const updatedBalance = ethers.utils.parseEther("0.5"); // cut channel balance from 1 -> 0.5
-
-      const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
-      const hashed = ethers.utils.keccak256(packed);
-      const arrayified = ethers.utils.arrayify(hashed);
-
-      const aliceSig = await alice.signMessage(arrayified);
-
-      const voucher = {
-        updatedBalance,
-        sig: ethers.utils.splitSignature(aliceSig),
-      };
+      const voucher = await createVoucher(updatedBalance, alice);
 
       await expect(streamerContract.withdrawEarnings(voucher)).to.emit(
         streamerContract,
@@ -100,20 +112,9 @@ describe("Statechannel Challenge: The Guru's Offering", function () {
       const [, alice] = await ethers.getSigners();
 
       const updatedBalance = ethers.utils.parseEther("0.5"); // equal to the current balance, should fail
-
-      const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
-      const hashed = ethers.utils.keccak256(packed);
-      const arrayified = ethers.utils.arrayify(hashed);
-
-      const aliceSig = await alice.signMessage(arrayified);
-
-      const voucher = {
-        updatedBalance,
-        sig: ethers.utils.splitSignature(aliceSig),
-      };
+      const voucher = await createVoucher(updatedBalance, alice);
 
       await expect(streamerContract.withdrawEarnings(voucher)).to.be.reverted;
-
       await assertBalance("2.5"); // contract total unchanged because withdrawal fails
     });
 
@@ -121,20 +122,9 @@ describe("Statechannel Challenge: The Guru's Offering", function () {
       const [, , , carol] = await ethers.getSigners();
 
       const updatedBalance = ethers.utils.parseEther("0.5");
-
-      const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
-      const hashed = ethers.utils.keccak256(packed);
-      const arrayified = ethers.utils.arrayify(hashed);
-
-      const carolSig = await carol.signMessage(arrayified);
-
-      const voucher = {
-        updatedBalance,
-        sig: ethers.utils.splitSignature(carolSig),
-      };
+      const voucher = await createVoucher(updatedBalance, carol);
 
       await expect(streamerContract.withdrawEarnings(voucher)).to.be.reverted;
-
       await assertBalance("2.5"); // contract total unchanged because carol has no channel
     });
 
