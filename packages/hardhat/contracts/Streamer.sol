@@ -67,7 +67,6 @@ contract Streamer is Ownable {
     // the `owner()` function)
     owner().call{value: payment}("");
     balances[signer] = v.updatedBalance;
-    emit Withdrawn(signer, payment);
   }
 
   /*
@@ -100,7 +99,6 @@ contract Streamer is Ownable {
 
     msg.sender.call{value: balances[msg.sender]}("");
     balances[msg.sender] = 0;
-    emit Closed(msg.sender);
   }
 
   struct Voucher {
